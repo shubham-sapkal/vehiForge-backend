@@ -38,7 +38,7 @@ class UserRoleService(
         val user = usersRepositories.findById(userId).orElseThrow { CustomException(404, "User Not Found!") }
        //  val role = roleRepository.findById(roleName).orElseThrow { CustomException(404, "Role Not Found!") }
 
-        var responseText = ""
+        var responseText: String
 
         when(updateType) {
             RoleUpdateTypes.ADD -> {
@@ -46,12 +46,12 @@ class UserRoleService(
                 responseText = "Role Added Successfully!"
             }
             RoleUpdateTypes.UPDATE -> {
-                val update_count = userRoleRepository.updatePermissionType(userId, roleName, permissionType)
-                responseText = "Role Update Successfully for '$update_count' times"
+                val updateCount = userRoleRepository.updatePermissionType(userId, roleName, permissionType)
+                responseText = "Role Update Successfully for '$updateCount' times"
             }
             RoleUpdateTypes.DELETE -> {
-                val delete_count = userRoleRepository.deleteUserRole(userId, roleName)
-                responseText = "Role Deleted Successfully for '$delete_count' times"
+                val deleteCount = userRoleRepository.deleteUserRole(userId, roleName)
+                responseText = "Role Deleted Successfully for '$deleteCount' times"
             }
 //            else -> {
 //                throw CustomException(404, "Update Type '$updateType' not Found ")

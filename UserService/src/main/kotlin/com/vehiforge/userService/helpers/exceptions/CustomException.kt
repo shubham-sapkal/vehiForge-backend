@@ -1,4 +1,4 @@
-package com.vehiforge.userService.helpers.exceptions;
+package com.vehiforge.userService.helpers.exceptions
 
 class CustomException (
     val status: Number = 500,

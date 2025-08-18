@@ -1,7 +1,6 @@
 package com.vehiforge.userService.core.users.controllers
 
 import com.vehiforge.userService.core.users.dto.UsersRequestBody
-import com.vehiforge.userService.core.users.models.Roles
 import com.vehiforge.userService.core.users.services.RoleServices
 import com.vehiforge.userService.core.users.services.UserRoleService
 import com.vehiforge.userService.helpers.common_dto.GenerateJsonResponse
@@ -24,7 +23,7 @@ class RolesControllers(
 
         try {
 
-            roleServices.createRole(createRole.roleName, createRole.roleDesc);
+            roleServices.createRole(createRole.roleName, createRole.roleDesc)
 
             return GenerateJsonResponse(
                 200,
