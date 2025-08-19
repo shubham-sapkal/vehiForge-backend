@@ -46,6 +46,27 @@ class UserServices(
 
     }
 
+    /*
+    * Description: Service Function for login user
+    * */
+    fun login(loginUser: UsersRequestBody.loginUser): String {
+
+        // Check if user exist
+        val users = usersRepositories.findById(loginUser.username).orElseThrow { CustomException(404, "Username Not Found!") }
+
+        if( users.password.equals(loginUser.password) ) {
+
+            // Return JWT Auth Token
+            return "asdsa"
+
+        }
+        else{
+            throw CustomException(400, "Password is incorrect!")
+        }
+
+    }
+
+
     // Service Fun for: Get All User
     fun getAllUser(): List<Users> {
         return usersRepositories.findAll()

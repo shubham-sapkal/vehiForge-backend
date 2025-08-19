@@ -54,6 +54,40 @@ class UsersControllers(
     }
 
     /*
+    * Description: API to get user login return jwt token
+    * Accessible to: OPEN
+    * */
+    @PostMapping("/login")
+    fun login(@RequestBody loginUserReqBody: UsersRequestBody.loginUser): GenerateJsonResponse<String> {
+        try{
+
+            return GenerateJsonResponse(
+                200,
+                "Login Successful!",
+                null,
+                userServices.login(loginUserReqBody)
+            )
+
+        }
+        catch (customException: CustomException) {
+            return GenerateJsonResponse(
+                customException.status,
+                "Something Went Wrong",
+                customException.errorMessage,
+                null
+            )
+        }
+        catch (exception: Exception) {
+            return GenerateJsonResponse(
+                500,
+                "Internal Server Error",
+                exception.message,
+                null
+            )
+        }
+    }
+
+    /*
     * Description: API to Get All User
     * Accessible to: SUPER_ADMIN
     * */

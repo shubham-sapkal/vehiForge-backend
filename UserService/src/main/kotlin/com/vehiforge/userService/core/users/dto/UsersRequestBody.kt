@@ -40,4 +40,10 @@ class UsersRequestBody {
         val roles: List<AddRoles>?
     )
 
+    // Login User
+    class loginUser(
+        val username: String,
+        val password: String
+    )
+
 }
