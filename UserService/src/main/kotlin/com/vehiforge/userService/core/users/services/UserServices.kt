@@ -1,16 +1,21 @@
 package com.vehiforge.userService.core.users.services
 
+import com.vehiforge.userService.core.security.services.JwtService
 import com.vehiforge.userService.core.users.dto.UsersRequestBody
 import com.vehiforge.userService.core.users.models.PermissionType
 import com.vehiforge.userService.core.users.models.Users
 import com.vehiforge.userService.core.users.repositories.UsersRepositories
 import com.vehiforge.userService.helpers.exceptions.CustomException
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
 
 @Service
 class UserServices(
-    val usersRepositories: UsersRepositories,
-    val userRoleService: UserRoleService
+    private val usersRepositories: UsersRepositories,
+    private val userRoleService: UserRoleService,
+
+    private val jwtService: JwtService
 ) {
 
     // Service Fun for: Create User
@@ -52,12 +57,21 @@ class UserServices(
     fun login(loginUser: UsersRequestBody.loginUser): String {
 
         // Check if user exist
-        val users = usersRepositories.findById(loginUser.username).orElseThrow { CustomException(404, "Username Not Found!") }
+        val user = usersRepositories.findById(loginUser.username).orElseThrow { CustomException(404, "Username Not Found!") }
 
-        if( users.password.equals(loginUser.password) ) {
+        if( user.password.equals(loginUser.password) ) {
 
-            // Return JWT Auth Token
-            return "asdsa"
+            val authorities = user.roles.map {
+                SimpleGrantedAuthority("ROLE_${it.role.roleName}_${it.permissionType}")
+            }
+
+            val details = User(
+                user.username,
+                user.password,
+                authorities
+            )
+
+            return jwtService.generateToken(details)
 
         }
         else{
