@@ -2,6 +2,7 @@ package com.vehiforge.userService.core.users.dto
 
 import com.vehiforge.userService.core.users.constants.RoleUpdateTypes
 import com.vehiforge.userService.core.users.models.PermissionType
+import com.vehiforge.userService.core.users.models.Roles
 
 class UsersRequestBody {
 
@@ -44,6 +45,20 @@ class UsersRequestBody {
     class loginUser(
         val username: String,
         val password: String
+    )
+
+    /*
+    * Introspect JWT Token
+    * */
+    class IntrospectReq(
+        val token: String
+    )
+
+
+    class IntrospectResponse(
+        val isValid: Boolean,
+        val username: String? = null,
+        val roles: List<String>? = null
     )
 
 }

@@ -1,7 +1,7 @@
-package com.vehiforge.userService.core.security.config
+package com.vehiforge.bookingService.core.security.config
 
-import com.vehiforge.userService.core.security.filters.JwtAuthFilter
-import com.vehiforge.userService.core.security.services.CustomUserDetailsService
+
+import com.vehiforge.bookingService.core.security.filters.JwtAuthFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -19,9 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
-class SecurityConfig(
+class AuthenticationConfig(
     private val jwtAuthFilter: JwtAuthFilter,
-    private val userDetailsService: CustomUserDetailsService
 ) {
 
     @Bean
@@ -30,29 +29,12 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy((SessionCreationPolicy.STATELESS)) }
             .authorizeHttpRequests {
                 it.requestMatchers("/health/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/users/introspect").permitAll()
-                    .requestMatchers("/roles/**").authenticated()
                     .anyRequest().authenticated()
             }
-            .authenticationProvider(daoAuthenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
 
     }
-
-    @Bean
-    fun daoAuthenticationProvider(): AuthenticationProvider {
-        val provider = DaoAuthenticationProvider()
-        provider.setUserDetailsService(userDetailsService)
-        provider.setPasswordEncoder(passwordEncoder())
-
-        return provider
-    }
-
-    @Bean
-    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
-
 
 }

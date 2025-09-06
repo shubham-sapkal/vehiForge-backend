@@ -88,6 +88,11 @@ class JwtService(
         }
     }
 
+    fun isValid(token: String): Boolean =
+        try {
+            parseClaims(token); true
+        } catch (e: Exception) { throw e }
+
 
 
 }

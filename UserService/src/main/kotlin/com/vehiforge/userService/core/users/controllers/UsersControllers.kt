@@ -1,5 +1,6 @@
 package com.vehiforge.userService.core.users.controllers
 
+import com.vehiforge.userService.core.security.services.JwtService
 import com.vehiforge.userService.core.users.dto.UsersRequestBody
 import com.vehiforge.userService.core.users.models.Users
 import com.vehiforge.userService.core.users.services.UserServices
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/users")
 class UsersControllers(
-    val userServices: UserServices
+    val userServices: UserServices,
+    val jwtService: JwtService
 ) {
 
     /*
@@ -135,6 +137,63 @@ class UsersControllers(
                 "User Found!",
                 null,
                 userServices.getUserByUserName(username)
+            )
+
+        }
+        catch (customException: CustomException) {
+            return GenerateJsonResponse(
+                customException.status,
+                "Something Went Wrong",
+                customException.errorMessage,
+                null
+            )
+        }
+        catch (exception: Exception) {
+            return GenerateJsonResponse(
+                500,
+                "Internal Server Error",
+                exception.message,
+                null
+            )
+        }
+
+    }
+
+
+    /*
+    * Description:
+    * Accessible to: OPEN TO ALL
+    * */
+    @PostMapping("/introspect")
+    fun introspect(@RequestBody body: UsersRequestBody.IntrospectReq): GenerateJsonResponse<UsersRequestBody.IntrospectResponse> {
+
+        try {
+
+            if( !jwtService.isValid(body.token) ) {
+                return GenerateJsonResponse(
+                    200,
+                    "Token Not Valid",
+                    "",
+                    UsersRequestBody.IntrospectResponse(
+                        false,
+                        null,
+                        null
+                    )
+                )
+            }
+
+            val username = jwtService.extractUsername(body.token)
+            val roles = jwtService.extractRoles(body.token)
+
+            return GenerateJsonResponse(
+                200,
+                "Token Is Valid",
+                "",
+                UsersRequestBody.IntrospectResponse(
+                    true,
+                    username,
+                    roles
+                )
             )
 
         }
