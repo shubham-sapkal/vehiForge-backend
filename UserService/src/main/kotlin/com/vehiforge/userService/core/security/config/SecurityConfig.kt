@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private val jwtAuthFilter: JwtAuthFilter,
     private val userDetailsService: CustomUserDetailsService
@@ -31,6 +31,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers("/health/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
+                    .requestMatchers("/roles/**").authenticated()
                     .anyRequest().authenticated()
             }
             .authenticationProvider(daoAuthenticationProvider())

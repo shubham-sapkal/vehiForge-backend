@@ -5,6 +5,7 @@ import com.vehiforge.userService.core.users.services.RoleServices
 import com.vehiforge.userService.core.users.services.UserRoleService
 import com.vehiforge.userService.helpers.common_dto.GenerateJsonResponse
 import com.vehiforge.userService.helpers.exceptions.CustomException
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,6 +20,7 @@ class RolesControllers(
 
     // Create Role
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN_READ_WRITE')")
     fun createRole(@RequestBody createRole: UsersRequestBody.CreateRole): GenerateJsonResponse<String> {
 
         try {
@@ -58,6 +60,7 @@ class RolesControllers(
     * Assign To:
     * */
     @PostMapping("/update")
+    @PreAuthorize("hasAnyRole('ADMIN_READ_WRITE')")
     fun updateUserRole(@RequestBody updateUserRole: UsersRequestBody.UpdateUserRole): GenerateJsonResponse<String> {
 
         try {

@@ -5,6 +5,7 @@ import com.vehiforge.userService.core.users.models.Users
 import com.vehiforge.userService.core.users.services.UserServices
 import com.vehiforge.userService.helpers.common_dto.GenerateJsonResponse
 import com.vehiforge.userService.helpers.exceptions.CustomException
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -92,6 +93,7 @@ class UsersControllers(
     * Accessible to: SUPER_ADMIN
     * */
     @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ADMIN_READ_WRITE', 'ADMIN_READ_ONLY)")
     fun getAllUsers(): GenerateJsonResponse<List<Users>> {
         try {
             return GenerateJsonResponse(

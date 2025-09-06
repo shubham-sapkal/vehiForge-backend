@@ -1,5 +1,6 @@
 package com.vehiforge.userService.core.users.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -22,12 +23,23 @@ data class UserRole(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username")
+    @JsonIgnore
     val user: Users,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_name")   // FK points to Role.roleName
+    @JsonIgnore
     val role: Roles,
 
     @Enumerated(EnumType.STRING)
     val permissionType: PermissionType
-)
+) {
+    val roleName: String
+        get() = role.roleName
+
+    val userName: String
+        get() = user.username
+
+    val roleDescription: String
+        get() = role.roleDescription
+}

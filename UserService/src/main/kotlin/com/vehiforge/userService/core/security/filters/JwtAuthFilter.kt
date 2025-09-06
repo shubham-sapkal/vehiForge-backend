@@ -2,7 +2,6 @@ package com.vehiforge.userService.core.security.filters
 
 import com.vehiforge.userService.core.security.services.CustomUserDetailsService
 import com.vehiforge.userService.core.security.services.JwtService
-import com.vehiforge.userService.core.users.services.UserServices
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
