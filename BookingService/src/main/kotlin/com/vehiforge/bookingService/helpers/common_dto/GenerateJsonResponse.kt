@@ -1,6 +1,5 @@
 package com.vehiforge.bookingService.helpers.common_dto
 
-
 import lombok.Getter
 import lombok.Setter
 
