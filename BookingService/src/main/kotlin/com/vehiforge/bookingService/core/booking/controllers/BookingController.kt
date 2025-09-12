@@ -25,7 +25,7 @@ class BookingController {
     * accessible to:
     * */
     @GetMapping("/all")
-    @PreAuthorize("hasAnyRole('ADMIN1_READ_WRITE', 'ADMIN_READ_ONLY')")
+    @PreAuthorize("hasAnyRole('ADMIN_READ_WRITE', 'ADMIN_READ_ONLY')")
     fun getAllBooking(): String {
         return "All Booking"
     }
