@@ -35,6 +35,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers("/health/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/users/create").permitAll()
                     .requestMatchers(HttpMethod.POST, "/users/introspect").permitAll()
                     .requestMatchers("/roles/**").authenticated()
                     .anyRequest().authenticated()

@@ -2,6 +2,8 @@ package com.vehiforge.userService.core.users.services
 
 import com.vehiforge.userService.core.security.services.JwtService
 import com.vehiforge.userService.core.users.dto.UsersRequestBody
+import com.vehiforge.userService.core.users.dto.UsersRespBody
+import com.vehiforge.userService.core.users.dto.UsersRespBody.GetRoles
 import com.vehiforge.userService.core.users.models.PermissionType
 import com.vehiforge.userService.core.users.models.Users
 import com.vehiforge.userService.core.users.repositories.UsersRepositories
@@ -9,6 +11,7 @@ import com.vehiforge.userService.helpers.exceptions.CustomException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
+import kotlin.String
 
 @Service
 class UserServices(
@@ -54,7 +57,7 @@ class UserServices(
     /*
     * Description: Service Function for login user
     * */
-    fun login(loginUser: UsersRequestBody.loginUser): String {
+    fun login(loginUser: UsersRequestBody.loginUser): UsersRespBody.LoginUserRespBody {
 
         // Check if user exist
         val user = usersRepositories.findById(loginUser.username).orElseThrow { CustomException(404, "Username Not Found!") }
@@ -71,7 +74,17 @@ class UserServices(
                 authorities
             )
 
-            return jwtService.generateToken(details)
+            return UsersRespBody.LoginUserRespBody(
+                username = user.username,
+                email = user.email,
+                firstName = user.firstName,
+                lastName = user.lastName,
+                roles = user.roles.map { UsersRespBody.GetRoles(
+                    roleName = it.roleName,
+                    permissionType = it.permissionType
+                ) },
+                authToken = jwtService.generateToken(details)
+            )
 
         }
         else{

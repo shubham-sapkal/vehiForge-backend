@@ -2,6 +2,7 @@ package com.vehiforge.userService.core.users.controllers
 
 import com.vehiforge.userService.core.security.services.JwtService
 import com.vehiforge.userService.core.users.dto.UsersRequestBody
+import com.vehiforge.userService.core.users.dto.UsersRespBody
 import com.vehiforge.userService.core.users.models.Users
 import com.vehiforge.userService.core.users.services.UserServices
 import com.vehiforge.userService.helpers.common_dto.GenerateJsonResponse
@@ -61,7 +62,7 @@ class UsersControllers(
     * Accessible to: OPEN
     * */
     @PostMapping("/login")
-    fun login(@RequestBody loginUserReqBody: UsersRequestBody.loginUser): GenerateJsonResponse<String> {
+    fun login(@RequestBody loginUserReqBody: UsersRequestBody.loginUser): GenerateJsonResponse<UsersRespBody.LoginUserRespBody> {
         try{
 
             return GenerateJsonResponse(
@@ -95,7 +96,7 @@ class UsersControllers(
     * Accessible to: SUPER_ADMIN
     * */
     @GetMapping("/all")
-    @PreAuthorize("hasAnyRole('ADMIN_READ_WRITE', 'ADMIN_READ_ONLY)")
+//    @PreAuthorize("hasAnyRole('ADMIN_READ_WRITE', 'ADMIN_READ_ONLY)")
     fun getAllUsers(): GenerateJsonResponse<List<Users>> {
         try {
             return GenerateJsonResponse(
