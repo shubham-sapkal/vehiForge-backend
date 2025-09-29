@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +24,7 @@ class AuthenticationConfig(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
+            .cors {  }
             .sessionManagement { it.sessionCreationPolicy((SessionCreationPolicy.STATELESS)) }
             .authorizeHttpRequests {
                 it.requestMatchers("/health/**").permitAll()
@@ -30,6 +34,19 @@ class AuthenticationConfig(
 
         return http.build()
 
+    }
+
+    // ✅ Global CORS configuration
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.allowedOrigins = listOf("*")  //
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE")
+        configuration.allowedHeaders = listOf("*")
+
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
     }
 
 }
