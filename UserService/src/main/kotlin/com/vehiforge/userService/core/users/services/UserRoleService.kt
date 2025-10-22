@@ -2,6 +2,7 @@ package com.vehiforge.userService.core.users.services
 
 import com.vehiforge.userService.core.users.constants.RoleUpdateTypes
 import com.vehiforge.userService.core.users.models.PermissionType
+import com.vehiforge.userService.core.users.models.Roles
 import com.vehiforge.userService.core.users.models.UserRole
 import com.vehiforge.userService.core.users.models.Users
 import com.vehiforge.userService.core.users.repositories.RoleRepository
@@ -59,6 +60,15 @@ class UserRoleService(
         }
 
         return responseText
+
+    }
+
+    /*
+    * DESCRIPTION:
+    * */
+    fun getDistinctRoles(): List<String> {
+
+        return roleRepository.findAll().map { it.roleName }
 
     }
 

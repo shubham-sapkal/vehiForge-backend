@@ -15,6 +15,15 @@ spring:
     hibernate:
       ddl-auto: update
 
+  kafka:
+    bootstrap-servers: localhost:9095
+    consumer-group-id: configuration-service
+    consumers:
+      config-change:
+        name: 'configurator.vehicle-configuration-change'
+      part-updated:
+        name: 'configurator.part-added-or-updated'
+
 security:
   user-service-url: ${USER_SERVICE_URL}
 

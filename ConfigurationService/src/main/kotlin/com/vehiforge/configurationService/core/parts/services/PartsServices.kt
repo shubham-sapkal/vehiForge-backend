@@ -6,13 +6,16 @@ import com.vehiforge.configurationService.core.parts.models.PartsMaster
 import com.vehiforge.configurationService.core.parts.repositories.PartFamilyDetailsRepository
 import com.vehiforge.configurationService.core.parts.repositories.PartsMasterRepository
 import com.vehiforge.configurationService.helpers.exceptions.CustomException
+import com.vehiforge.configurationService.kafka.producer.KafkaMessageProducer
 import org.springframework.stereotype.Service
 import java.util.Date
 
 @Service
 class PartsServices(
     val partFamilyDetailsRepository: PartFamilyDetailsRepository,
-    val partsMasterRepository: PartsMasterRepository
+    val partsMasterRepository: PartsMasterRepository,
+    // Kafka Message Producer
+    val kafkaMessageProducer: KafkaMessageProducer
 ) {
 
     /*
@@ -58,6 +61,9 @@ class PartsServices(
     /*
     * TODO: Get Parts Family Details
     * */
+    fun getPartFamilies(): List<PartFamilyDetails> {
+        return partFamilyDetailsRepository.findAll();
+    }
 
     /*
     * TODO: Bulk Create or Update Part Family using excel/csv sheet
@@ -124,11 +130,14 @@ class PartsServices(
 
             partsMasterRepository.save(updatedPartMaster)
 
+            // Generate Kafka Message
+            kafkaMessageProducer.sendPartMasterAddedOrUpdated("UPDATED", updatedPartMaster.partId, updatedPartMaster);
+
             return "Part Master Updated Successfully!"
 
         }
         else{
-            partsMasterRepository.save(PartsMaster(
+            val createdPartMaster = partsMasterRepository.save(PartsMaster(
                 plantId = updatedParts.plantId,
                 partId = updatedParts.partId,
                 partName = updatedParts.partName,
@@ -137,6 +146,9 @@ class PartsServices(
                 standardCost = updatedParts.standardCost,
                 lastCostUpdateAt = Date()
             ))
+
+            // Generate Kafka Message
+            kafkaMessageProducer.sendPartMasterAddedOrUpdated("ADDED", createdPartMaster.partId, createdPartMaster);
 
             return "Part Master Created Successfully!"
         }
@@ -147,6 +159,40 @@ class PartsServices(
     /*
     * TODO: Delete Part
     * */
+    fun deletePart(partDetails: PartsRequestDto.DeletePartMaster): String {
 
+//        val part = partsMasterRepository.findByPlantIdAndPartIdIsDeletedFalse(partDetails.plantId, partDetails.partId) ?: throw CustomException(404, "Part Not Found for ${partDetails.plantId} ${partDetails.partId} !")
+//
+//        //  Soft Delete the Part
+//        part.isDeleted = true
+//        part.deletedBy = "System"
+//
+//        partsMasterRepository.save(part)
+//
+//        kafkaMessageProducer.sendPartMasterAddedOrUpdated(
+//            "DELETED",
+//            part.partId,
+//            part
+//        )
+
+        return "Part Deleted Successfully!"
+
+    }
+
+    /*
+    * DESCRIPTION: Get Parts On List Of String
+    * */
+    fun getListOfParts(partsList: List<String>): List<PartsMaster> {
+        return partsMasterRepository.findByPartIdIn(partsList);
+    }
+
+    /*
+    * DESCRIPTION: Get Parts Of Specific Plant
+    * */
+    fun getPartsOfPlants(filter: PartsRequestDto.GetPartsOfPlants): List<PartsMaster> {
+
+        return partsMasterRepository.findByPlantIdIn(filter.plantIds)
+
+    }
 
 }

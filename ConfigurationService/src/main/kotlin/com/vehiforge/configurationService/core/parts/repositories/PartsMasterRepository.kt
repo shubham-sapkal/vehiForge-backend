@@ -13,4 +13,14 @@ interface PartsMasterRepository: JpaRepository<PartsMaster, UUID> {
     * */
     fun findByPlantIdAndPartId(plantId: Integer, partId: String): Optional<PartsMaster>
 
+    /*
+    * Description:
+    * */
+    fun findByPartIdIn(partList: List<String>): List<PartsMaster>
+
+    /*
+    * Description:
+    * */
+    fun findByPlantIdIn(plantId: List<String>): List<PartsMaster>
+
 }

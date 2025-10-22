@@ -1,6 +1,7 @@
 package com.vehiforge.configurationService.core.parts.controllers
 
 import com.vehiforge.configurationService.core.parts.dto.PartsRequestDto
+import com.vehiforge.configurationService.core.parts.models.PartFamilyDetails
 import com.vehiforge.configurationService.core.parts.models.PartsMaster
 import com.vehiforge.configurationService.core.parts.repositories.PartsMasterRepository
 import com.vehiforge.configurationService.core.parts.services.PartsServices
@@ -55,8 +56,36 @@ class PartsController(
     }
 
     /*
-   * TODO: Get Parts Family Details
+   * Description: Get Parts Family Details
    * */
+    @GetMapping("/part-family")
+    fun getPartsFamilies(): GenerateJsonResponse<List<PartFamilyDetails>> {
+
+        try {
+            return GenerateJsonResponse(
+                200,
+                "Part Families Retrived Successfully!",
+                "",
+                partsServices.getPartFamilies()
+            )
+        }
+        catch (ce: CustomException) {
+            return GenerateJsonResponse(
+                ce.status,
+                ce.message ?: "",
+                ce.errorMessage,
+                null
+            )
+        }
+        catch (e: Exception) {
+            return GenerateJsonResponse(
+                500,
+                "",
+                e.message,
+                null
+            )
+        }
+    }
 
     /*
     * TODO: Bulk Create or Update Part Family using excel/csv sheet
@@ -74,6 +103,37 @@ class PartsController(
                 partsServices.deletePartFamily(deletePartFamily.partFamilyName),
                 "",
                 null
+            )
+        } catch (ce: CustomException) {
+            return GenerateJsonResponse(
+                ce.status,
+                ce.message ?: "",
+                ce.errorMessage,
+                null
+            )
+        } catch (e: Exception) {
+            return GenerateJsonResponse(
+                500,
+                "",
+                e.message,
+                null
+            )
+        }
+    }
+
+
+    /*
+    * Get All Parts
+    * */
+    @GetMapping("/parts-master")
+    fun getParts(): GenerateJsonResponse<List<PartsMaster>> {
+
+        try {
+            return GenerateJsonResponse(
+                200,
+                "Parts Retrived Successfully!",
+                "",
+                partsServices.getParts()
             )
         }
         catch (ce: CustomException) {
@@ -95,23 +155,19 @@ class PartsController(
 
     }
 
-    /*
-    * TODO: Get Part Families
-    * */
-
 
     /*
-    * Get All Parts
+    * Get All Parts Of Plant
     * */
-    @GetMapping("/parts-master")
-    fun getParts(): GenerateJsonResponse<List<PartsMaster>> {
+    @PostMapping("/parts-master/filters")
+    fun getPartsOfPlant(@RequestBody filter: PartsRequestDto.GetPartsOfPlants): GenerateJsonResponse<List<PartsMaster>> {
 
         try {
             return GenerateJsonResponse(
                 200,
                 "Parts Retrived Successfully!",
                 "",
-                partsServices.getParts()
+                partsServices.getPartsOfPlants(filter)
             )
         }
         catch (ce: CustomException) {
@@ -168,7 +224,69 @@ class PartsController(
 
 
     /*
-    * TODO: Delete Part
+    * DESCRIPTION: Delete Part
     * */
+    @DeleteMapping("/parts-master")
+    fun deletePartMaster(@RequestBody partId: PartsRequestDto.DeletePartMaster): GenerateJsonResponse<String> {
+
+        try {
+
+            return GenerateJsonResponse(
+                200,
+                partsServices.deletePart(partId),
+                "",
+                null
+            )
+        }
+        catch (ce: CustomException) {
+            return GenerateJsonResponse(
+                ce.status,
+                ce.message ?: "",
+                ce.errorMessage,
+                null
+            )
+        }
+        catch (e: Exception) {
+            return GenerateJsonResponse(
+                500,
+                "",
+                e.message,
+                null
+            )
+        }
+
+    }
+
+    /*
+    * Description:
+    * */
+    fun getPartsList(@RequestBody partsList: List<String>): GenerateJsonResponse<List<PartsMaster>> {
+        try {
+            return GenerateJsonResponse(
+                200,
+                "Parts Fetched Successfully!",
+                "",
+                partsServices.getListOfParts(partsList)
+            )
+        }
+        catch (ce: CustomException) {
+            println("CustomException: $ce")
+            return GenerateJsonResponse(
+                ce.status,
+                ce.message ?: "",
+                ce.errorMessage,
+                null
+            )
+        }
+        catch (e: Exception) {
+            println("Exception: $e")
+            return GenerateJsonResponse(
+                500,
+                "",
+                e.message,
+                null
+            )
+        }
+    }
 
 }

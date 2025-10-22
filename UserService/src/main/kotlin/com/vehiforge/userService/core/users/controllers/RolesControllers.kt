@@ -1,11 +1,13 @@
 package com.vehiforge.userService.core.users.controllers
 
 import com.vehiforge.userService.core.users.dto.UsersRequestBody
+import com.vehiforge.userService.core.users.models.Roles
 import com.vehiforge.userService.core.users.services.RoleServices
 import com.vehiforge.userService.core.users.services.UserRoleService
 import com.vehiforge.userService.helpers.common_dto.GenerateJsonResponse
 import com.vehiforge.userService.helpers.exceptions.CustomException
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -96,6 +98,40 @@ class RolesControllers(
         }
 
 
+    }
+
+    /*
+    * Description:
+    * Assign To:
+    * */
+    @GetMapping("/get-distinct-roles")
+    fun getDistinctRoleList(): GenerateJsonResponse<List<String>> {
+        try {
+
+            return GenerateJsonResponse(
+                200,
+                message = "Roles Fetch Successfully!",
+                errorMessage = "",
+                userRoleService.getDistinctRoles()
+            )
+
+        }
+        catch(customException: CustomException){
+            return GenerateJsonResponse(
+                status = customException.status,
+                message = "",
+                errorMessage = customException.errorMessage,
+                result = null
+            )
+        }
+        catch (exception: Exception) {
+            return GenerateJsonResponse(
+                status = 500,
+                message = "",
+                errorMessage = exception.message,
+                result = null
+            )
+        }
     }
 
 }

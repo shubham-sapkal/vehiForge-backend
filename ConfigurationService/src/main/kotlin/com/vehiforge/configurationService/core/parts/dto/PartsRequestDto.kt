@@ -21,4 +21,13 @@ class PartsRequestDto {
         val standardCost: Double,
     )
 
+    class DeletePartMaster(
+        val plantId: Integer,
+        val partId: String
+    )
+
+    class GetPartsOfPlants(
+        val plantIds: List<String>
+    )
+
 }
